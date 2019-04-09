@@ -1,7 +1,36 @@
 .jumbotron h1 {
   text-align: center;
+  color: white;
+}
+.jumbotron {
+  background-image: url("../img/bug.jpg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 h2 {
   text-align: center;
+}
+
+tr, th {
+  width: 25%;
+  background-color: rgba(100, 100, 100, 0.5);
+  color: orange;
+}
+
+
+
+.container {
+  background-image: url("../img/emptyRoad.jpeg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  height: 900px;
+  margin-top: 50px;
+  padding: 50px;
+}
+
+body {
+  background-color: rgb(140, 140, 140);
 }

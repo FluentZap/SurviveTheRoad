@@ -38,7 +38,6 @@ Inventory.prototype.removeItem = function(name, quantity){
 }
 //if car money is higher then the cost take funds and remove from shop and add to car inventory
 Inventory.prototype.buyItem = function(name, sentTo) {
-  console.log(name);
   var inventoryItem = this.getItem(name);
   if (inventoryItem) {
     if (inventoryItem.cost <= CarMoney) {
@@ -52,6 +51,19 @@ Inventory.prototype.buyItem = function(name, sentTo) {
       }
     }
   }
+
+  Inventory.prototype.sellItem = function(name, sellTo) {
+    var inventoryItem = this.getItem(name);
+    if (inventoryItem) {
+      CarMoney += inventoryItem.cost;
+      var newItem = new StuffToBuy(
+        inventoryItem.name,
+        inventoryItem.cost,
+        inventoryItem.weight, 1)
+        sellTo.addItem(newItem)
+        this.removeItem(inventoryItem.name, 1);
+      }
+    }
   //check the inventory array and return an item that matches name or false if nothing matches
   Inventory.prototype.getItem = function(name){
     if (name) {
@@ -65,7 +77,7 @@ Inventory.prototype.buyItem = function(name, sentTo) {
     }
     return false;
   }
-
+  //removes an item from the inventory based on name
   Inventory.prototype.deleteItem = function(name){
     if (name) {
       for (var i = 0; i < this.inventory.length; i++) {
@@ -83,12 +95,12 @@ Inventory.prototype.buyItem = function(name, sentTo) {
 
   //add initial store items to inventory;
   Inventory.prototype.addInitialItems = function () {
-    this.addItem(new StuffToBuy("Food", 100, 10, 30));
+    this.addItem(new StuffToBuy("Food", 100, 10, 3));
     this.addItem(new StuffToBuy("Water", 4, 8, 5));
-    this.addItem(new StuffToBuy("Gas", 20, 8, 20));
-    this.addItem(new StuffToBuy("Substances", 1000, 0, 4));
-    this.addItem(new StuffToBuy("Breathing Masks", 250, 2, 5));
-    this.addItem(new StuffToBuy("Tire Repire Kits", 300, 20, 7));
+    this.addItem(new StuffToBuy("Gas", 20, 8, 3));
+    this.addItem(new StuffToBuy("Substances", 1000, 0, 1));
+    this.addItem(new StuffToBuy("Breathing Masks", 250, 2, 2));
+    this.addItem(new StuffToBuy("Tire Repire Kits", 300, 20, 1));
   }
 
   function addEventHandlers() {
@@ -96,6 +108,14 @@ Inventory.prototype.buyItem = function(name, sentTo) {
     $("#market-inventory").on("click", "tr", function() {
       var itemId = this.id.replace("item-", "")
       firstShop.buyItem(itemId, carInventory);
+      updateInventoryTable(firstShop, '#market-inventory');
+      updateInventoryTable(carInventory, '#car-inventory');
+      updateMoney();
+    });
+
+    $("#car-inventory").on("click", "tr", function() {
+      var itemId = this.id.replace("item-", "")
+      carInventory.sellItem(itemId, firstShop);
       updateInventoryTable(firstShop, '#market-inventory');
       updateInventoryTable(carInventory, '#car-inventory');
       updateMoney();
@@ -126,7 +146,7 @@ Inventory.prototype.buyItem = function(name, sentTo) {
   var carInventory = new Inventory();
   //Shorthand for $(document).ready()
   $(function () {
-    CarMoney = 2000;
+    CarMoney = 5000;
     addEventHandlers();
     updateMoney();
     firstShop.addInitialItems();
